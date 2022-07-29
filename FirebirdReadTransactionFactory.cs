@@ -18,9 +18,9 @@ public class FirebirdReadTransactionFactory
     public async Task<T> Execute<T>(Func<IDbTransaction, Task<T>> func)
     {
         using var connection = await GetAsyncConnection(_fbConnectionStringBuilder);
-        using var transaction = connection.BeginTransaction(DbTransactionOptions.Read);
+        using var transaction = await connection.BeginTransactionAsync(DbTransactionOptions.Read);
         var result = await func(transaction);
-        transaction.Commit();
+        await transaction.CommitAsync();
         return result;
     }
 
