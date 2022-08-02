@@ -33,7 +33,7 @@ insert into TMP (TMP_ID, VAL) values ('3', 'kill' );
                 ServerType = FbServerType.Default,
                 Charset = "UTF8",
                 Pooling = true,
-                MaxPoolSize = 1
+                MaxPoolSize = 3
             };
         });
         builder.RegisterType<FirebirdReadTransactionFactory>();
@@ -44,10 +44,18 @@ insert into TMP (TMP_ID, VAL) values ('3', 'kill' );
         builder.RegisterType<DbQueryExample>().AsImplementedInterfaces();
         builder.RegisterType<DbQueryExample>().AsImplementedInterfaces();
         var container = builder.Build();
-            
-        var parallelQueries = container.Resolve<IEnumerable<IAsyncExecution>>();
-        await ExecuteAllAsync(parallelQueries);
-            
+
+        try
+        {
+            var parallelQueries = container.Resolve<IEnumerable<IAsyncExecution>>();
+            await ExecuteAllAsync(parallelQueries);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("we had an error - dont close app");
+            Console.ReadLine();
+        }
+        
         Console.WriteLine("fin.");
         Console.ReadLine();
     }
