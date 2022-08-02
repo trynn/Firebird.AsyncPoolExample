@@ -34,7 +34,7 @@ public class DbQueryExample : IAsyncExecution
     {
         const string sql = @"select * from tmp";
         
-        var data = await _firebirdReadTransactionFactory.Execute(transaction =>
+        var data = await _firebirdReadTransactionFactory.Execute(async transaction =>
         {
             var command = new CommandDefinition(
                 commandText: sql,
@@ -43,7 +43,8 @@ public class DbQueryExample : IAsyncExecution
                 commandType: null,
                 cancellationToken: default);
 
-            return transaction.Connection.QueryAsync<TmpQuery>(command);
+            await Task.Delay(1000);
+            return await transaction.Connection.QueryAsync<TmpQuery>(command);
         });
 
         return data;
